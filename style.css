@@ -508,6 +508,24 @@ button:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
   .icon-btn { width: 36px; height: 36px; }
   .hud-right { padding-right: 84px; }
 }
+/* landscape phones: keep the HUD out of the way and clear of the notch */
+@media (max-height: 500px) {
+  #hud { padding: calc(8px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) 0 calc(12px + env(safe-area-inset-left)); }
+  #hud .label, .tiernext, .combo small { display: none; }
+  .score { font-size: 22px; }
+  .burn { font-size: 11px; }
+  .tier { font-size: 11px; letter-spacing: 0.14em; }
+  .tierbar { margin: 4px auto 0; width: 180px; }
+  .hud-center { min-width: 180px; }
+  .lives { margin: 0 0 2px; }
+  .lives img { width: 20px; height: 20px; }
+  .combo span { font-size: 18px; }
+  .combobar { width: 60px; margin-top: 3px; }
+  .hud-right { padding-right: 84px; }
+  #corner { top: calc(8px + env(safe-area-inset-top)); right: calc(12px + env(safe-area-inset-right)); }
+  .icon-btn { width: 34px; height: 34px; }
+  #banner { top: 16%; }
+}
 @media (prefers-reduced-motion: reduce) {
   .logo .orbit, .logo .ring, .logo .avatar, .logo .flame, .btn-primary::after { animation: none; }
 }
