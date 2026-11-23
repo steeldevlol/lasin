@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lachine Simulator</title>
+  <meta name="description" content="Play Now!">
+  <meta name="theme-color" content="#ff4fa8">
+
+  <!-- Favicon: it's her. it's always her. -->
+  <link rel="icon" type="image/png" href="assets/lachine.png">
+  <link rel="apple-touch-icon" href="assets/lachine.png">
+
+  <!-- Embed (Discord, X/Twitter, iMessage, Slack, ...) -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Lachine Simulator">
+  <meta property="og:title" content="The lachine AI token abuse simulator">
+  <meta property="og:description" content="Play Now!">
+  <meta property="og:image" content="https://cdn.discordapp.com/avatars/998635461776003153/ea40ac74c65f50bee0f28bb6c16de546.png?size=1024">
+  <meta property="og:image:alt" content="Lachine">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="The lachine AI token abuse simulator">
+  <meta name="twitter:description" content="Play Now!">
+  <meta name="twitter:image" content="https://cdn.discordapp.com/avatars/998635461776003153/ea40ac74c65f50bee0f28bb6c16de546.png?size=1024">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="game" aria-label="Lachine Simulator game"></canvas>
+  <div id="fx-vignette" aria-hidden="true"></div>
+  <div id="fx-scan" aria-hidden="true"></div>
+
+  <!-- ===== HUD ===== -->
+  <div id="hud" class="hidden">
+    <div class="hud-left">
+      <div class="label">AI TOKENS ABUSED</div>
+      <div id="score" class="score">0</div>
+      <div class="burn">&asymp; <b id="burn">$0.00</b> of someone else's compute</div>
+    </div>
+    <div class="hud-center">
+      <div id="tier" class="tier">FREE TIER</div>
+      <div class="tierbar"><div id="tierfill"></div></div>
+      <div id="tiernext" class="tiernext">next: PLUS</div>
+    </div>
+    <div class="hud-right">
+      <div class="label">ACCOUNTS</div>
+      <div id="lives" class="lives"></div>
+      <div id="combo" class="combo dim"><span id="combo-x">x1</span><small id="combo-n">combo</small></div>
+      <div class="combobar"><i id="combofill"></i></div>
+    </div>
+    <div id="chips" class="chips"></div>
+  </div>
+
+  <div id="corner">
+    <button id="btn-mute" class="icon-btn" aria-label="Toggle sound" title="Sound (M)">
+      <svg viewBox="0 0 24 24" class="on"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+      <svg viewBox="0 0 24 24" class="off"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 9.5l5 5M21.5 9.5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+    <button id="btn-pause" class="icon-btn hidden" aria-label="Pause" title="Pause (P)">
+      <svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor"/><rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor"/></svg>
+    </button>
+  </div>
+
+  <div id="banner" aria-live="polite"><div id="banner-title"></div><div id="banner-sub"></div></div>
+
+  <!-- ===== MENU ===== -->
+  <section id="menu" class="screen">
+    <div class="inner menu-inner">
+      <div class="logo">
+        <div class="ring"></div>
+        <div class="orbit"><i style="--a:0deg"></i><i class="g" style="--a:120deg"></i><i style="--a:240deg"></i></div>
+        <div class="flame"></div>
+        <img class="avatar" src="assets/lachine.png" alt="Lachine" onerror="this.onerror=null;this.src='https://cdn.discordapp.com/avatars/998635461776003153/ea40ac74c65f50bee0f28bb6c16de546.webp?size=1024'">
+      </div>
+
+      <h1 class="title">LACHINE<span>SIMULATOR</span></h1>
+      <p class="tagline">The lachine AI token abuse simulator</p>
+
+      <button id="btn-play" class="btn-primary big">Play Now!</button>
+      <p class="best">Personal best: <b id="best-menu">0</b> tokens</p>
+
+      <div class="legend">
+        <div class="lg-col">
+          <h3>Collect</h3>
+          <div class="lg"><span class="ico hex">AI</span>AI token <em>64&ndash;256</em></div>
+          <div class="lg"><span class="ico hex gold">AI</span>Golden token <em>1,024</em></div>
+          <div class="lg"><span class="ico hex gpu">GPU</span>An entire GPU <em>8,192</em></div>
+          <div class="lg"><span class="ico chain">x8</span>Chain pickups for combo</div>
+        </div>
+        <div class="lg-col">
+          <h3>Dodge or shoot</h3>
+          <div class="lg"><span class="ico rl">429</span>Rate limits</div>
+          <div class="lg"><span class="ico cap"></span>CAPTCHAs</div>
+          <div class="lg"><span class="ico beam"></span>Safety filter lasers</div>
+          <div class="lg"><span class="ico ts"></span>Trust &amp; Safety drones</div>
+        </div>
+        <div class="lg-col">
+          <h3>Power-ups</h3>
+          <div class="lg"><span class="ico pw" style="--c:#38f3ff">U</span>Unlimited Plan <em>magnet</em></div>
+          <div class="lg"><span class="ico pw" style="--c:#ffc94d">x3</span>Parallel Agents</div>
+          <div class="lg"><span class="ico pw" style="--c:#ff4fa8">2X</span>2X Promo</div>
+          <div class="lg"><span class="ico pw" style="--c:#b46bff">J</span>Jailbreak</div>
+          <div class="lg"><span class="ico pw" style="--c:#7dff8a">V</span>VPN <em>shield</em></div>
+          <div class="lg"><span class="ico pw" style="--c:#ffffff">+1</span>Alt account</div>
+        </div>
+      </div>
+
+      <p class="controls">
+        Fly with <kbd>mouse</kbd> <kbd>WASD</kbd> <kbd>ZQSD</kbd> <kbd>&larr;&uarr;&darr;&rarr;</kbd> or drag on touch.
+        Auto-fire is always on, obviously. <kbd>P</kbd> pause &middot; <kbd>M</kbd> mute
+      </p>
+    </div>
+    <div class="ticker" aria-hidden="true"><div class="ticker-label">LIVE</div><div class="ticker-viewport"><div class="ticker-track" id="ticker"></div></div></div>
+  </section>
+
+  <!-- ===== PAUSE ===== -->
+  <section id="pause" class="screen hidden">
+    <div class="inner card">
+      <h2 class="card-title">PAUSED</h2>
+      <p class="card-sub">Your tokens are safe. Probably.</p>
+      <div class="row">
+        <button id="btn-resume" class="btn-primary">Resume</button>
+        <button id="btn-quit" class="btn-ghost">Quit to menu</button>
+      </div>
+      <p class="hint"><kbd>P</kbd> / <kbd>Esc</kbd> to resume</p>
+    </div>
+  </section>
+
+  <!-- ===== GAME OVER ===== -->
+  <section id="over" class="screen hidden">
+    <div class="inner card over-card">
+      <div class="banned">
+        <img class="avatar sm" src="assets/lachine.png" alt="" onerror="this.onerror=null;this.src='https://cdn.discordapp.com/avatars/998635461776003153/ea40ac74c65f50bee0f28bb6c16de546.webp?size=1024'">
+        <div class="stamp">BANNED</div>
+      </div>
+      <h2 class="card-title red">ALL ACCOUNTS BANNED</h2>
+      <p class="card-sub" id="over-quote">the lachine has been rate limited. for now.</p>
+
+      <div class="final" id="final-score">0</div>
+      <div class="final-label">AI tokens abused</div>
+      <div class="newbest hidden" id="newbest">&#9733; NEW PERSONAL BEST &#9733;</div>
+
+      <div class="rank"><span>RANK</span><b id="rank">Casual Prompter</b></div>
+
+      <div class="stats">
+        <div><b id="st-time">0:00</b><span>survived</span></div>
+        <div><b id="st-combo">0</b><span>peak combo</span></div>
+        <div><b id="st-tier">FREE</b><span>tier reached</span></div>
+        <div><b id="st-cost">$0</b><span>compute burned</span></div>
+        <div><b id="st-water">0 L</b><span>datacenter water</span></div>
+        <div><b id="st-kills">0</b><span>limits bypassed</span></div>
+      </div>
+
+      <div class="row">
+        <button id="btn-again" class="btn-primary">Abuse Again</button>
+        <button id="btn-share" class="btn-ghost">Copy Flex</button>
+        <button id="btn-menu" class="btn-ghost">Menu</button>
+      </div>
+      <p class="best">Personal best: <b id="best-over">0</b></p>
+    </div>
+  </section>
+
+  <script src="game.js" defer></script>
+</body>
+</html>
