@@ -1828,7 +1828,8 @@
   }
 
   async function shareScore() {
-    const url = location.href.split('#')[0];
+    // unique URL per score so Discord always builds a fresh preview instead of reusing a cached one
+    const url = `${location.href.split(/[?#]/)[0]}?flex=${lastScore}`;
     const text = `I abused ${fmt(lastScore)} AI tokens in Lachine Simulator and got ranked "${lastRank}" \u{1F680} ${url}`;
     let ok = false;
     try {
